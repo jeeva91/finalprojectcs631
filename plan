@@ -1,0 +1,37 @@
+Liang
+	Parse uri; --bad uri -->send_response(socket, s)
+	merge functions(time stamp);
+
+Jeeva:	
+	sendfile -->send_response()		-->tonight
+	sendir					-->tonight
+	sendCGI					--> thursday evening
+	send_response()  			-->tonight
+
+
+
+sendfile(last_modified_time)
+{stat()--> time modified
+
+
+-->send_response()
+}
+
+sendcgi(int socket_fd, command, char** aruguments);
+
+senddir(){
+
+if there is index.html
+
+remove the ..
+sort
+
+-->send_response()
+}
+
+
+
+CGI()
+
+
+send_response(int socket_fd, time, buff, contend_type, response_type)
