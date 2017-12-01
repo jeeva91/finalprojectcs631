@@ -51,6 +51,7 @@ senddir(int to_fd, char* path){
 	exit(-1);
       }
     }
+    current_fileptr = fileptr +fptr_cnt*MAXFILENAME;
     strcat(current_fileptr, dirp->d_name);
     current_fileptr+=MAXFILENAME;
     fptr_cnt +=1;
@@ -64,7 +65,7 @@ senddir(int to_fd, char* path){
    *call the logger
    */
 
-  qsort((void*)fileptr, fptr_cnt*MAXFILENAME, MAXFILENAME, comparator);
+  qsort((void*)fileptr, fptr_cnt, MAXFILENAME, comparator);
 
   if((buff = malloc(fptr_cnt*MAXFILENAME))==NULL){
     //senderror()internal server error;
@@ -77,14 +78,14 @@ senddir(int to_fd, char* path){
     strcat(buff, "\n");
     current_fileptr+=MAXFILENAME;
   }
-  // send_response(to_fd, 0, buff, "Text", 200);
-  
+  send_response(to_fd, 0, buff, "Text", 200);
+  /*
     if((nw=write(to_fd, fileptr, strlen(fileptr)))<strlen(fileptr)){
     //senderror()internal server error;
     perror("write failed");
     exit(-1);
     
-    }
+    }*/
   nw = strlen(buff);
   free(fileptr);
   free(buff);
@@ -93,8 +94,8 @@ senddir(int to_fd, char* path){
 }
 
 int comparator(const void* first, const void* second){
-  char* f = (char*) first;
-  char* s = (char*) second;
-  return strcmp(f,s);
+  //char* f = (char*) first;
+  //char* s = (char*) second;
+  return strcmp((char*)first,(char*)second);
 }
   
