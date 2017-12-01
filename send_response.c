@@ -10,6 +10,32 @@
 #include<time.h>
 #include<stdbool.h>
 
+void reverse(char s[]){
+     int i, j;
+     char c;
+
+     for (i = 0, j = strlen(s)-1; i<j; i++, j--) {
+         c = s[i];
+         s[i] = s[j];
+         s[j] = c;
+     }
+}  
+
+void my_itoa(int n, char s[]){
+     int i, sign;
+
+     if ((sign = n) < 0)  /* record sign */
+         n = -n;          /* make n positive */
+     i = 0;
+     do {       /* generate digits in reverse order */
+         s[i++] = n % 10 + '0';   /* get next digit */
+     } while ((n /= 10) > 0);     /* delete it */
+     if (sign < 0)
+         s[i++] = '-';
+     s[i] = '\0';
+     reverse(s);
+} 
+
 int send_response(int socket_fd, time_t modified_time, char* content, char* content_type, int status_code){
   char* buff;
   size_t buff_size;
@@ -19,7 +45,7 @@ int send_response(int socket_fd, time_t modified_time, char* content, char* cont
   char content_size[10];
   size_t nw;
   
-  buff_size = strlen(content) + 300;
+  buff_size = sizeof(content) + 300;
   if((buff = (char*) malloc(buff_size))==NULL){
     send_response(socket_fd, 0, "", "", 300);
     perror("malloc failed");
@@ -68,7 +94,7 @@ int send_response(int socket_fd, time_t modified_time, char* content, char* cont
     break;
   case 503:
     strcat(buff, "503 Service Unavailable\n");
-    break;
+    
   }
 
   now = time(0);
@@ -94,9 +120,11 @@ int send_response(int socket_fd, time_t modified_time, char* content, char* cont
   strcat(buff, "\n");
   
   strcat(buff, "Content-Length: ");
-  strcat(buff, itoa(strlen(content), content_size, 10));
+  my_itoa(strlen(content), content_size);
+  strcat(buff, content_size);
   strcat(buff, "\n\n");
   strcat(buff, content);
+  printf("%s",buff);
   if((nw = write(socket_fd, buff, strlen(buff)+1))!=(strlen(buff)+1)){
     perror("unable to write to the socket");
   }
